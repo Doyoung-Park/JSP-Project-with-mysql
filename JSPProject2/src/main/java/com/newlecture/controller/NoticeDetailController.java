@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.newlecture.web.entity.Notice;
+import com.newlecture.web.service.NoticeService;
 
 @WebServlet("/notice/detail")
 public class NoticeDetailController extends HttpServlet{
@@ -22,6 +23,9 @@ public class NoticeDetailController extends HttpServlet{
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int id=Integer.parseInt(request.getParameter("id"));
 
+		/*
+		 * 디테일 페이지에서 이렇게 각 DB로부터 데이터를 불러와서 화면에 띄우는 방식이었다면.... (아래에서 계속)
+		 * 
 		String url="jdbc:mysql://localhost:3306/newlecture";
 		String sql = "SELECT * FROM NOTICE WHERE ID=?";
 
@@ -41,14 +45,6 @@ public class NoticeDetailController extends HttpServlet{
 			 String hit= rs.getString("HIT");
 			 String files= rs.getString("FILES");
 			 String content=rs.getString("CONTENT");
-			/* 
-			request.setAttribute("", title);
-			request.setAttribute("",writerID);
-			request.setAttribute("", regdate);
-			request.setAttribute("", hit);
-			request.setAttribute("", files);
-			request.setAttribute("", content);
-			*/	
 
 			 Notice notice = new Notice(
 					 id, title, writerID, regdate, hit, files, content 
@@ -67,6 +63,14 @@ public class NoticeDetailController extends HttpServlet{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		*/
+		
+		// 이렇게 더 간단하게 바꿀 수 있음
+		NoticeService service = new NoticeService();
+		Notice notice = service.getNotice(id);
+		request.setAttribute("n", notice);
+		
 		
 		// 서블릿에서 서블릿으로 전이하는 방법은 2가지가 있음
 		// 1. redirect 2. forward
