@@ -34,7 +34,7 @@ public class NoticeService {
 		// mysql 서버를 가지고 출력을 했을 때 데이터가 안뜨는 이유: 
 		// 이 밑에 써있는 쿼리는 oracle 쿼리고, mysql 쿼리가 다
 		String sql="select * from ( "
-				+ " select @ROWNUM:=@ROWNUM+1 as ROWNUM, T.*  "
+				+ " select @ROWNUM:=@ROWNUM+1 as ROWNUM, T.*  "								//********************************************
 				+ "	from notice T, (select @ROWNUM:=0) TMP "
 				+ "	where "+field+" like ? order by regdate desc) as TTMP "
 				+ "	where ROWNUM between ? and ?";
@@ -101,10 +101,10 @@ public class NoticeService {
 		
 		int count=0;
 		
-		String sql="SELECT COUNT(ID) COUNT FROM ( "
-				+ "    SELECT ROWNUM NUM, N.*  "
-				+ "    FROM (SELECT * FROM NOTICE WHERE "+field+" LIKE ? ORDER BY REGDATE DESC) N "
-				+ ")";
+		String sql="select count(ROWNUM) count from ( "
+				+ " select @ROWNUM:=@ROWNUM+1 as ROWNUM, T.*  "								//********************************************
+				+ "	from notice T, (select @ROWNUM:=0) TMP "
+				+ "	where "+field+" like ? order by regdate desc) as TTMP ";
 		
 		String url="jdbc:mysql://localhost:3306/newlecture";
 
@@ -116,9 +116,10 @@ public class NoticeService {
 			
 			
 			ResultSet rs = st.executeQuery();
-
-			count = rs.getInt("count");
-
+			
+			if(rs.next())
+				count = rs.getInt("count");
+			
 			rs.close();
 			st.close();
 			con.close();
