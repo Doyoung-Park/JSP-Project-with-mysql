@@ -197,7 +197,7 @@
 						<!-- <td> ${i+1 } </td>  -->
 					
 						<td> ${n.id }</td>
-						<td class="title indent text-align-left"><a href="detail?id=${n.id }">  ${n.title}</a></td>
+						<td class="title indent text-align-left"><a href="detail?id=${n.id }">  ${n.title}</a> <span> [${n.cmtCount}]</span></td>
 						<td>${n.writerID}</td>
 						<td><fmt:formatDate value="${n.regdate}" pattern="yyyy년 MM월 dd일"/> </td>
 						<td>${n.hit }</td>

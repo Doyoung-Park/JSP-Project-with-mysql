@@ -11,14 +11,15 @@ import java.util.Date;
 import java.util.List;
 
 import com.newlecture.web.entity.Notice;
+import com.newlecture.web.entity.NoticeView;
 
 public class NoticeService {
-	public List<Notice> getNoticeList() {
+	public List<NoticeView> getNoticeList() {
 		
 		return getNoticeList("title","",1);
 	}
 	
-	public List<Notice> getNoticeList(int page) {
+	public List<NoticeView> getNoticeList(int page) {
 		
 		return getNoticeList("title","",page);
 	}
@@ -27,15 +28,15 @@ public class NoticeService {
 	// 검색창에서 검색 기능 함수
 	// field -> 'title' (제목) or 'writer_id' (작성자 아이디)
 	// query -> 검색창에 입력한 검색어 => 이 검색어를 포함하는 값을 찾아야 함
-	public List<Notice> getNoticeList(String field, String query, int page) {
+	public List<NoticeView> getNoticeList(String field, String query, int page) {
 		
-		List<Notice> list= new ArrayList<>();
+		List<NoticeView> list= new ArrayList<>();
 		
 		// mysql 서버를 가지고 출력을 했을 때 데이터가 안뜨는 이유: 
 		// 이 밑에 써있는 쿼리는 oracle 쿼리고, mysql 쿼리가 다
 		String sql="select * from ( "
 				+ " select @ROWNUM:=@ROWNUM+1 as ROWNUM, T.*  "								//********************************************
-				+ "	from notice T, (select @ROWNUM:=0) TMP "
+				+ "	from NOTICE_VIEW T, (select @ROWNUM:=0) TMP "
 				+ "	where "+field+" like ? order by regdate desc) as TTMP "
 				+ "	where ROWNUM between ? and ?";
 //		
@@ -67,10 +68,16 @@ public class NoticeService {
 				 Date regdate= rs.getDate("REGDATE");
 				 String hit= rs.getString("HIT");
 				 String files= rs.getString("FILES");
-				 String content=rs.getString("CONTENT");
-
-				 Notice notice = new Notice(
-						 id, title, writerID, regdate, hit, files, content 
+				 int cmtCount = rs.getInt("CMT_COUNT");
+				 
+				 NoticeView notice = new NoticeView(
+						 id, 
+						 title, 
+						 writerID, 
+						 regdate, 
+						 hit, 
+						 files, 
+						 cmtCount
 						 );
 				 
 				 list.add(notice);
